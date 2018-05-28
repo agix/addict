@@ -32,10 +32,12 @@ const parseBody = body => {
     let booleans = ['passwordExpires', 'enabled'];
     for (const name in body) {
       if (booleans.indexOf(name) > -1) {
-        body[name] = 
-          (body[name] === 'true') ? true : 
-          (body[name] === 'false') ? false : 
-          body[name];
+        body[name] =
+          body[name] === 'true'
+            ? true
+            : body[name] === 'false'
+              ? false
+              : body[name];
       }
     }
     return body;
@@ -99,6 +101,14 @@ module.exports = (app, config, ad) => {
     const user = req.params.user;
     const pass = req.body.pass || req.body.password;
     let [error, response] = await wrapAsync(ad.user(user).password(pass));
+    response = !error ? { success: true } : response;
+    error = error ? Object.assign({ success: false }, error) : error;
+    respond(res, error, response);
+  });
+
+  app.put('/user/:user/expire-password', async (req, res) => {
+    const user = req.params.user;
+    let [error, response] = await wrapAsync(ad.user(user).expirePassword());
     response = !error ? { success: true } : response;
     error = error ? Object.assign({ success: false }, error) : error;
     respond(res, error, response);
@@ -261,6 +271,11 @@ module.exports = (app, config, ad) => {
     const filter = req.params.filter;
     const config = api.parseQuery(req.query);
     let [error, response] = await wrapAsync(ad.find(filter, config));
+    respond(res, error, response);
+  });
+
+  app.get('/bitlocker/:computer', async (req, res) => {
+    let [error, response] = await ad.bitlocker(req.params.computer);
     respond(res, error, response);
   });
 

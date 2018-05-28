@@ -7,14 +7,14 @@ const vorpal = require('vorpal')();
 const swagpiConfig = require('./src/swagpi.config.js');
 const loadConfig = require('./src/loadConfig');
 const routes = require('./src/routes');
-const commands = require('./src/commands');
+// const commands = require('./src/commands');
 const middleware = require('./middleware');
-const chalk = vorpal.chalk;
+// const chalk = vorpal.chalk;
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-middleware.call(app);
+middleware(app);
 
 swagpi(app, {
   logo: './src/img/logo.png',
@@ -25,9 +25,9 @@ const init = args => {
   try {
     const config = loadConfig(args);
     const ad = new AD(config).cache(true);
-    app.listen(config.port || 3000);
+    app.listen(config.port || 3000, '127.0.0.1');
     routes(app, config, ad);
-    vorpal.use(commands, { ad });
+    // vorpal.use(commands, { ad });
     vorpal.log(
       `Addict Active Directory API\nListening on port ${config.port || 3000}`
     );
@@ -50,4 +50,4 @@ vorpal
   });
 
 vorpal.exec(`_start ${process.argv.slice(2).join(' ')}`);
-vorpal.delimiter(chalk.cyan('Addict:')).show();
+// vorpal.delimiter(chalk.cyan('Addict:')).show();
