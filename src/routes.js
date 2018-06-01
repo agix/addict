@@ -274,11 +274,6 @@ module.exports = (app, config, ad) => {
     respond(res, error, response);
   });
 
-  app.get('/bitlocker/:computer', async (req, res) => {
-    let [error, response] = await ad.bitlocker(req.params.computer);
-    respond(res, error, response);
-  });
-
   const start = new Date();
   app.get('/status', async (req, res) => {
     let uptime = new Date() - start;
