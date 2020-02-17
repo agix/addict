@@ -12,12 +12,18 @@ module.exports = args => {
   config.url = process.env.ADDICT_URL || config.url;
   config.port = process.env.ADDICT_PORT || config.port;
   config.host = process.env.ADDICT_HOST || config.host;
+  config.domain = process.env.ADDICT_DOMAIN || config.domain;
 
   config.user = args.options.user || config.user;
   config.pass = args.options.pass || config.pass;
   config.url = args.options.url || config.url;
   config.port = args.options.port || config.port;
   config.host = args.options.host || config.host;
+  config.domain = args.options.domain || config.domain;
+
+  if (config.domain) {
+    config.user = config.user + '@' + config.domain;
+  }
 
   const missing = [];
   if (!config.user) {
